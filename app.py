@@ -38,7 +38,7 @@ def index():
     return jsonify({'message': users}), 200
 
 
-@ app.route('/players', methods=['POST', 'GET'])
+@app.route('/players', methods=['POST', 'GET'])
 def result():
     if request.method == 'GET':
         return render_template("template.html")
