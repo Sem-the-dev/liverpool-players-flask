@@ -14,7 +14,6 @@ def get_db():
     if db is None:
         db = g._database = sqlite3.connect('database.db')
         db.execute('CREATE TABLE IF NOT EXISTS users (name TEXT)')
-        print(db)
     return db
 
 
@@ -34,8 +33,9 @@ def query_db(query, args=(), one=False):
 
 @app.route('/')
 def index():
-    users = query_db('select * from users')
-    return jsonify({'message': users}), 200
+    db = get_db()
+    players = db.execute('select name from users')
+    return render_template('players.html', players=players)
 
 
 @ app.route('/players', methods=['POST', 'GET'])
@@ -44,7 +44,6 @@ def result():
         return render_template("template.html")
     if request.method == 'POST':
         result = request.form
-        print(result)
         db = get_db()
         db.execute(f'''INSERT INTO users (name) values ('{result["name"]}')''')
         db.commit()
