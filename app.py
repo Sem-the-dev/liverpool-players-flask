@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request, g
 from flask_cors import CORS
 import sqlite3
 # from controllers import players
@@ -9,45 +9,45 @@ CORS(app)
 players = [{"name": 'Player1'}]
 
 
-@app.route("/")
-def template_test():
-    return render_template('players.html', players=players)
+def get_db():
+    db = getattr(g, '_database', None)
+    if db is None:
+        db = g._database = sqlite3.connect('database.db')
+        db.execute('CREATE TABLE IF NOT EXISTS users (name TEXT)')
+        print(db)
+    return db
 
 
-@app.route('/database/')
-def database():
-    """Returns webpage containing query results from database
-    Returns
-    -------
-    template : obj
-        The ``database.html`` webpage.
-    """
-
-    # Connect to database
-    connection = sqlite3.connect('data.db')
-    cursor = connection.cursor()
-
-    # Execute query
-    sql_command = 'SELECT * FROM main_table;'
-    cursor.execute(sql_command)
-
-    # Parse results
-    results_dict = {}
-    results = cursor.fetchall()
-    for result in results:
-        results_dict[result[1]] = result[2]
-
-    return render_template('database.html', results_dict=results_dict)
+@app.teardown_appcontext
+def close_connection(exception):
+    db = getattr(g, '_database', None)
+    if db is not None:
+        db.close()
 
 
-@app.route('/players', methods=['POST', 'GET'])
+def query_db(query, args=(), one=False):
+    cur = get_db().execute(query, args)
+    rv = cur.fetchall()
+    cur.close()
+    return (rv[0] if rv else None) if one else rv
+
+
+@app.route('/')
+def index():
+    users = query_db('select * from users')
+    return jsonify({'message': users}), 200
+
+
+@ app.route('/players', methods=['POST', 'GET'])
 def result():
     if request.method == 'GET':
         return render_template("template.html")
     if request.method == 'POST':
         result = request.form
         print(result)
-        players.append(result)
+        db = get_db()
+        db.execute(f'''INSERT INTO users (name) values ('{result["name"]}')''')
+        db.commit()
         return jsonify({'message': f'Added player!'}), 200
 
 
