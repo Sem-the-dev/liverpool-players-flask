@@ -1,0 +1,15 @@
+BEGIN;
+
+CREATE TABLE main_table (
+    "id" INTEGER NOT NULL PRIMARY KEY,
+    "state" TEXT NOT NULL UNIQUE,
+    "capital" TEXT
+    );
+
+INSERT INTO main_table (state, capital) VALUES ("Massachusetts", "Boston");
+INSERT INTO main_table (state, capital) VALUES ("Indiana", "Indianapolis");
+INSERT INTO main_table (state, capital) VALUES ("Maryland", "Annapolis");
+INSERT INTO main_table (state, capital) VALUES ("New York", "Albany");
+INSERT INTO main_table (state, capital) VALUES ("Texas", "Austin");
+
+COMMIT;

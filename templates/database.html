@@ -1,0 +1,5 @@
+<p> This is the database page </p>
+
+{% for state, capital in results_dict.items() %}
+    <p> {{state}}: {{capital}} </p>
+{% endfor %}
