@@ -49,9 +49,16 @@
         {% for player in players %}
         <tr>
             <td>{{player[0]}}</td>
-            <td>{{player[1]}}</td>
+            <td>
+                <form method="POST">
+                    <input type="number" name="goals" id="">
+                    <input type="submit" value="+">
+                </form>
+            </td>
             <td>{{player[2]}}</td>
-            <td><a href="{{ '/players/%s'%player[2]}}">edit</a></td>
+            <!-- <td><form method="POST">
+                <input type="submit" name="delete" value="x">
+            </form></td> -->
         </tr>
         {% endfor %}
     </table>

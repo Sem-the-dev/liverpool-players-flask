@@ -6,14 +6,12 @@ import sqlite3
 app = Flask(__name__)
 CORS(app)
 
-players = [{"name": 'Player1'}]
-
 
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
         db = g._database = sqlite3.connect('database.db')
-        db.execute('CREATE TABLE IF NOT EXISTS users (name TEXT)')
+        db.execute('CREATE TABLE IF NOT EXISTS users (name TEXT, goals INT, id INTEGER PRIMARY KEY AUTOINCREMENT)')
     return db
 
 
@@ -34,7 +32,7 @@ def query_db(query, args=(), one=False):
 @app.route('/')
 def index():
     db = get_db()
-    players = db.execute('select name from users')
+    players = db.execute('select * from users')
     return render_template('players.html', players=players)
 
 
@@ -45,9 +43,28 @@ def result():
     if request.method == 'POST':
         result = request.form
         db = get_db()
-        db.execute(f'''INSERT INTO users (name) values ('{result["name"]}')''')
+        db.execute(f'''INSERT INTO users (name, goals) values ('{result["name"]}', 0)''')
         db.commit()
         return jsonify({'message': f'Added player!'}), 200
+
+
+@app.route('/players/<int:player_id>', methods=['PUT', 'POST', 'GET', 'PATCH', 'DELETE'])
+def player_handler(player_id):
+    if request.method == 'GET':
+        db = get_db()
+        players = db.execute(f'''select * from users WHERE id={player_id}''')
+        return render_template('players_edit.html', players=players)
+    if request.method == 'POST':
+        result = request.form
+        if result["goals"]:
+            db = get_db()
+            db.execute(f'''UPDATE users SET goals={result["goals"]} WHERE id={player_id}''')
+            db.commit()
+            return jsonify({'message': f'Added goals!'}), 200
+        # if result["delete"]:
+        #     db.execute(f'''DELETE FROM users WHERE id={player_id}''')
+        #     db.commit()
+        #     return jsonify({'message': f'Deleted player!'}), 200
 
 
 if __name__ == "__main__":
