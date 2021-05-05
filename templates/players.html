@@ -1,24 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            background-image: url("https://wallpapercave.com/wp/wp1813550.jpg");
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: center;
+            background-color: rgba(187, 185, 185, 0.712);
+        }
+
+        h1 {
+            text-align: center;
+            color: rgba(182, 24, 24, 0.918);
+        }
+
+        th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #af4c4c;
+            color: white;
+            border: 1px solid rgb(3, 0, 0);
+            padding: 8px;
+        }
+
+        td {
+            border: 1px solid rgb(3, 0, 0);
+            padding: 8px;
+        }
+    </style>
     <title>Document</title>
 </head>
+
 <body>
+    <h1> Welcome to all things Liverpool FC!</h1>
     <table>
         <tr>
-            <th>name</th>
-            <th>goals</th>
+            <th>Name</th>
+            <th>Goals Scored</th>
         </tr>
         {% for player in players %}
         <tr>
-        <td>{{player.name}}</td>
-        <td><form method = "POST"><input type="number" name="" id=""><input type="submit" value="+"></form></td>
+            <td>{{player.name}}</td>
+            <td>
+                <form method="POST"><input type="number" name="" id=""><input type="submit" value="+"></form>
+            </td>
         </tr>
         {% endfor %}
-      </table>
-    
+    </table>
+
 </body>
+
 </html>
