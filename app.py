@@ -12,7 +12,9 @@ def get_db():
     if db is None:
         db = g._database = sqlite3.connect('database.db')
         db.execute(
-            'CREATE TABLE IF NOT EXISTS users (name TEXT, goals INT, id INTEGER PRIMARY KEY AUTOINCREMENT)')
+            '''CREATE TABLE IF NOT EXISTS users
+                                    (name TEXT, goals INT, id
+                                    INTEGER PRIMARY KEY AUTOINCREMENT)''')
     return db
 
 
@@ -45,12 +47,14 @@ def result():
         result = request.form
         db = get_db()
         db.execute(
-            f'''INSERT INTO users (name, goals) values ('{result["name"]}', 0)''')
+            f'''INSERT INTO users (name, goals)
+            values ('{result["name"]}', 0)''')
         db.commit()
         return jsonify({'message': f'Added player!'}), 200
 
 
-@app.route('/players/<int:player_id>', methods=['PUT', 'POST', 'GET', 'PATCH', 'DELETE'])
+@app.route('/players/<int:player_id>', methods=['PUT', 'POST', 'GET', 'PATCH',
+                                                'DELETE'])
 def player_handler(player_id):
     if request.method == 'GET':
         db = get_db()
