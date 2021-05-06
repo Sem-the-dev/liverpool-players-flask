@@ -1,7 +1,6 @@
 import pytest
 import app
 
-
 @pytest.fixture
 def api(monkeypatch):
     # test_players = [
