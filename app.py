@@ -11,7 +11,10 @@ def get_db():
     db = getattr(g, '_database', None)
     if db is None:
         db = g._database = sqlite3.connect('database.db')
-        db.execute('CREATE TABLE IF NOT EXISTS users (name TEXT, goals INT, id INTEGER PRIMARY KEY AUTOINCREMENT)')
+        db.execute(
+            '''CREATE TABLE IF NOT EXISTS users
+                                    (name TEXT, goals INT, id
+                                    INTEGER PRIMARY KEY AUTOINCREMENT)''')
     return db
 
 
@@ -43,12 +46,15 @@ def result():
     if request.method == 'POST':
         result = request.form
         db = get_db()
-        db.execute(f'''INSERT INTO users (name, goals) values ('{result["name"]}', 0)''')
+        db.execute(
+            f'''INSERT INTO users (name, goals)
+            values ('{result["name"]}', 0)''')
         db.commit()
         return jsonify({'message': f'Added player!'}), 200
 
 
-@app.route('/players/<int:player_id>', methods=['PUT', 'POST', 'GET', 'PATCH', 'DELETE'])
+@app.route('/players/<int:player_id>', methods=['PUT', 'POST', 'GET', 'PATCH',
+                                                'DELETE'])
 def player_handler(player_id):
     if request.method == 'GET':
         db = get_db()
@@ -58,7 +64,9 @@ def player_handler(player_id):
         result = request.form
         if result["goals"]:
             db = get_db()
-            db.execute(f'''UPDATE users SET goals={result["goals"]} WHERE id={player_id}''')
+            db.execute(
+                f'''UPDATE users SET goals={result["goals"]}
+                WHERE id={player_id}''')
             db.commit()
             return jsonify({'message': f'Added goals!'}), 200
         # if result["delete"]:
